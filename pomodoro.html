@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro Timer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      color: #333;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    #timer {
+      font-size: 5rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #2e2e2e;
+      animation: pulse 2s infinite;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      animation: fadeInUp 1.5s ease-out;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff9800;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #e68900;
+      transform: scale(1.05);
+    }
+
+    #musicBtn {
+      margin-top: 10px;
+      background-color: #4caf50;
+      animation: fadeIn 2s ease-out;
+    }
+
+    #musicBtn:hover {
+      background-color: #449d48;
+    }
+
+    .quote {
+      font-size: 1.2rem;
+      color: #555;
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    #settings {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .input-field {
+      padding: 8px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1> Pomodoro Timer</h1>
+  <div id="timer">25:00</div>
+  <div id="quote" class="quote">"Focus is the key to productivity. Stay strong!"</div>
+  <div class="button-group">
+    <button onclick="startTimer()">Start</button>
+    <button onclick="pauseTimer()">Pause</button>
+    <button onclick="resetTimer()">Reset</button>
+  </div>
+  <div id="settings">
+    <div>
+      <label for="focusTime">Focus (mins):</label>
+      <input type="number" id="focusTime" class="input-field" value="25" min="1">
+    </div>
+    <div>
+      <label for="shortBreak">Short Break (mins):</label>
+      <input type="number" id="shortBreak" class="input-field" value="5" min="1">
+    </div>
+    <div>
+      <label for="longBreak">Long Break (mins):</label>
+      <input type="number" id="longBreak" class="input-field" value="15" min="1">
+    </div>
+  </div>
+  
+  <!-- Audio lokal (file di laptop) -->
+  <audio id="alarmSound" src="Audio.mp3" preload="auto"></audio>
+  <audio id="bgMusic" src="Audio.mp3" preload="auto" loop></audio>
+  <button onclick="toggleMusic()" id="musicBtn">Play Music</button>
+
+  <script>
+    let time;
+    let timer;
+    let running = false;
+    let isFocus = true;
+    const alarmSound = document.getElementById('alarmSound');
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    const quote = document.getElementById('quote');
+
+    const quotes = [
+      "Focus is the key to productivity. Stay strong!",
+      "Take a deep breath. You're doing great!",
+      "Keep pushing forward. Success is near!",
+      "You got this! Every minute counts.",
+      "Great things never come from comfort zones."
+    ];
+
+    function updateDisplay() {
+      const minutes = String(Math.floor(time / 60)).padStart(2, '0');
+      const seconds = String(time % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+      const focusTime = parseInt(document.getElementById('focusTime').value) * 60;
+      const shortBreak = parseInt(document.getElementById('shortBreak').value) * 60;
+      const longBreak = parseInt(document.getElementById('longBreak').value) * 60;
+
+      if (!running) {
+        running = true;
+        time = isFocus ? focusTime : shortBreak;
+        updateDisplay();
+        quote.textContent = quotes[Math.floor(Math.random() * quotes.length)]; // Random motivational quote
+        timer = setInterval(() => {
+          if (time > 0) {
+            time--;
+            updateDisplay();
+          } else {
+            clearInterval(timer);
+            running = false;
+            alarmSound.play(); // Play alarm for session change
+            isFocus = !isFocus; // Switch session
+            if (isFocus) {
+              quote.textContent = "Time's up! Time for focus.";
+              alarmSound.play(); // Play alarm at start of focus session
+            } else {
+              quote.textContent = "Time's up! Take a short break.";
+              alarmSound.play(); // Play alarm at start of break session
+            }
+            startTimer(); // Automatically move to next session
+          }
+        }, 1000);
+      }
+    }
+
+    function pauseTimer() {
+      clearInterval(timer);
+      running = false;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      const focusTime = parseInt(document.getElementById('focusTime').value) * 60;
+      time = focusTime;
+      updateDisplay();
+      quote.textContent = "Ready for a new session!";
+    }
+
+    function toggleMusic() {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        musicBtn.textContent = "Pause Music";
+      } else {
+        bgMusic.pause();
+        musicBtn.textContent = "Play Music";
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
