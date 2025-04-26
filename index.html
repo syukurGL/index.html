@@ -133,9 +133,10 @@
     </div>
   </div>
 
-  <!-- Link ke audio file di Google Drive -->
+  <!-- Audio from Laptop -->
+  <!-- Replace 'Audio1.mp3' with your actual audio file name and path -->
   <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
-  <audio id="bgMusic" src="https://drive.google.com/uc?export=download&id=1SGFWYGB87g7m9xut3h8G1y_LjJisrnYV" preload="auto" loop></audio>
+  <audio id="bgMusic" src="Audio1.mp3" preload="auto" loop></audio> <!-- Audio file from laptop -->
   <button onclick="toggleMusic()" id="musicBtn">Play Music</button>
 
   <script>
@@ -210,10 +211,10 @@
     function toggleMusic() {
       if (bgMusic.paused) {
         bgMusic.play();
-        musicBtn.textContent = "Pause Music";
+        musicBtn.textContent = "Pause Music"; // Change button text to "Pause Music"
       } else {
         bgMusic.pause();
-        musicBtn.textContent = "Play Music";
+        musicBtn.textContent = "Play Music"; // Change button text to "Play Music"
       }
     }
 
