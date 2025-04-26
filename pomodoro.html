@@ -110,7 +110,7 @@
   </style>
 </head>
 <body>
-  <h1> Pomodoro Timer</h1>
+  <h1>🍅 Pomodoro Timer</h1>
   <div id="timer">25:00</div>
   <div id="quote" class="quote">"Focus is the key to productivity. Stay strong!"</div>
   <div class="button-group">
@@ -132,10 +132,10 @@
       <input type="number" id="longBreak" class="input-field" value="15" min="1">
     </div>
   </div>
-  
-  <!-- Audio lokal (file di laptop) -->
-  <audio id="alarmSound" src="Audio.mp3" preload="auto"></audio>
-  <audio id="bgMusic" src="Audio.mp3" preload="auto" loop></audio>
+
+  <!-- Link ke audio file di Google Drive -->
+  <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
+  <audio id="bgMusic" src="https://drive.google.com/file/d/1SGFWYGB87g7m9xut3h8G1y_LjJisrnYV/view?usp=sharing" preload="auto" loop></audio> <!-- Ganti dengan ID file Google Drive -->
   <button onclick="toggleMusic()" id="musicBtn">Play Music</button>
 
   <script>
